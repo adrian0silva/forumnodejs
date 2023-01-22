@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^8.2.0",
+    "@fastify/type-provider-json-schema-to-ts": "^2.2.2",
     "@prisma/client": "^4.9.0",
     "dayjs": "^1.11.7",
     "fastify": "^4.11.0",
