@@ -2,25 +2,25 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const fistForumId = '0730ffac-d039-4194-9571-01aa2aa0efbd';
+const fistBoardId = '0730ffac-d039-4194-9571-01aa2aa0efbd';
 
-const secondForumId = '00880d75-a933-4fef-94ab-e05744435297';
+const secondBoardId = '00880d75-a933-4fef-94ab-e05744435297';
 
 async function run() {
-    await prisma.forum.deleteMany();
+    await prisma.board.deleteMany();
 
     await Promise.all([
-        prisma.forum.create({
+        prisma.board.create({
             data: {
-                id: fistForumId,
+                id: fistBoardId,
                 title: 'Off Topic',
                 description: 'Discute sobre qualquer coisa',
                 created_at: new Date()
             }
         }),
-        prisma.forum.create({
+        prisma.board.create({
             data: {
-                id: secondForumId,
+                id: secondBoardId,
                 title: 'Consoles e Jogos',
                 description: 'Playstation,Xbox,Nintendo',
                 created_at: new Date()
