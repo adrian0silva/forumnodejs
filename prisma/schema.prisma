@@ -5,17 +5,56 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model Forum {
+model Board {
   id String @id @default(uuid())
   title String
   description String
   created_at DateTime
+  topics Topic[]
 
-  @@map("forums")
+  @@map("boards")
 }
 
+model User {
+  id String @id @default(uuid())
+  email String  @unique
+  username  String @unique
+  password String
+  created_at DateTime
+  updated_at DateTime
+  role  Role    @default(USER)
+  topics Topic[]
+
+  @@map("users")
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+model Topic {
+  id String @id @default(uuid())
+  title String
+  description String
+  created_at DateTime
+  updated_at DateTime
+
+  board  Board @relation(fields: [boardId], references: [id])
+  boardId String
+
+  user  User @relation(fields: [userId], references: [id])
+  userId String
+
+  @@map("topics")
+}
