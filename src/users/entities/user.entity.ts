@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, Unique } from 'typeorm';
 import { Roles } from '../../auth/role/roles.enum';
 import { Post } from 'src/post/entities/post.entity';
+import { Reply } from 'src/post/entities/repliy.entity';
 
 @Entity('users')
 export class User {
@@ -27,6 +28,9 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];
+
+  @OneToMany(() => Reply, (reply) => reply.author)
+  replies: Reply[]
 //   @OneToMany(() => Post, post => post.author)
 //   posts: Post[];
 }
