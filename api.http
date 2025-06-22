@@ -1,0 +1,108 @@
+POST http://localhost:4000/users
+Content-Type: application/json
+
+{
+    "name": "John DOE Amininastro",
+    "email": "john.doe@example.com",
+    "password": "123456",
+    "role": "ADMIN"
+}
+
+###
+POST http://localhost:4000/users
+Content-Type: application/json
+{
+    "name": "John DOE MODERATOR",
+    "email": "john.doe_moderator@example.com",
+    "password": "654321",
+    "role": "MODERATOR"
+}
+
+###
+POST http://localhost:4000/users
+Content-Type: application/json
+
+{
+    "name": "aDRIANO USER",
+    "email": "ADRIANO@example.com",
+    "password": "654321",
+    "role": "USER"
+}
+
+###
+GET http://localhost:4000/users
+Authorization: Bearer {{tokenAdmin}}
+
+###
+GET http://localhost:4000/users/1
+
+###
+# ADMIN
+# @name adminLogin
+POST http://localhost:4000/auth/login
+Content-Type: application/json
+
+{
+   "email": "john.doe@example.com",
+   "password": "123456"
+}
+
+//@tokenAdmin = {{adminLogin.response.body.access_token}}
+
+###
+# MODERATOR
+# @name moderatorLogin
+POST http://localhost:4000/auth/login
+Content-Type: application/json
+
+{
+   "email": "john.doe_moderator@example.com",
+   "password": "654321"
+}
+
+@tokenModerator = {{moderatorLogin.response.body.access_token}}
+
+###
+# USER
+# @name userLogin
+POST http://localhost:4000/auth/login
+Content-Type: application/json
+
+{
+   "email": "ADRIANO@example.com",
+   "password": "654321"
+}
+
+@tokenUser = {{userLogin.response.body.access_token}}
+
+###
+POST http://localhost:4000/posts
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBET0UgQW1pbmluYXN0cm8iLCJlbWFpbCI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwic3ViIjoxLCJpYXQiOjE3NDYxNDU1NDQsImV4cCI6MTc0NjE0OTE0NH0.aZNqikRWpC5-Qw0Dr4Ufvi-zqCbDw91edXVydbmMIow
+
+{
+    "title": "Então esse é o forosin?",
+    "content": "Estou gostando"
+}
+
+###
+GET http://localhost:4000/posts
+Authorization: Bearer {{tokenAdmin}}
+
+###
+# Exemplo de uso dos outros tokens:
+# GET http://localhost:4000/posts
+# Authorization: Bearer {{tokenModerator}}
+#
+# GET http://localhost:4000/posts
+# Authorization: Bearer {{tokenUser}}
+
+###
+# Login Google
+GET http://localhost:4000/auth/google
+
+###
+# Callback Google (será chamado automaticamente após o login)
+GET http://localhost:4000/auth/google/redirect
+
+@tokenGoogle = {{googleCallback.response.body.access_token}}

@@ -1,0 +1,1 @@
+export declare const REQUEST_TOKEN_PAYLOAD_KEY = "user";
