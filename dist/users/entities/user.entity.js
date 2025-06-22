@@ -14,9 +14,10 @@ const openapi = require("@nestjs/swagger");
 const typeorm_1 = require("typeorm");
 const roles_enum_1 = require("../../auth/role/roles.enum");
 const post_entity_1 = require("../../post/entities/post.entity");
+const repliy_entity_1 = require("../../post/entities/repliy.entity");
 let User = class User {
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => Number }, login: { required: true, type: () => String }, email: { required: true, type: () => String }, password: { required: true, type: () => String }, role: { required: true, enum: require("../../auth/role/roles.enum").Roles }, createdAt: { required: true, type: () => Date }, updatedAt: { required: true, type: () => Date }, posts: { required: true, type: () => [require("../../post/entities/post.entity").Post] } };
+        return { id: { required: true, type: () => Number }, login: { required: true, type: () => String }, email: { required: true, type: () => String }, password: { required: true, type: () => String }, role: { required: true, enum: require("../../auth/role/roles.enum").Roles }, createdAt: { required: true, type: () => Date }, updatedAt: { required: true, type: () => Date }, posts: { required: true, type: () => [require("../../post/entities/post.entity").Post] }, replies: { required: true, type: () => [require("../../post/entities/repliy.entity").Reply] } };
     }
 };
 exports.User = User;
@@ -52,6 +53,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => post_entity_1.Post, (post) => post.author),
     __metadata("design:type", Array)
 ], User.prototype, "posts", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => repliy_entity_1.Reply, (reply) => reply.author),
+    __metadata("design:type", Array)
+], User.prototype, "replies", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)('users')
 ], User);

@@ -17,9 +17,11 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const post_entity_1 = require("./entities/post.entity");
+const repliy_entity_1 = require("./entities/repliy.entity");
 let PostService = class PostService {
-    constructor(postRepository) {
+    constructor(postRepository, repliesRepository) {
         this.postRepository = postRepository;
+        this.repliesRepository = repliesRepository;
     }
     async create(createPostDto) {
         const post = this.postRepository.create(createPostDto);
@@ -31,11 +33,38 @@ let PostService = class PostService {
             relations: ['author', 'forum'],
         });
     }
+    async findOne(id) {
+        return this.postRepository.findOne({
+            where: { id },
+            relations: ['author', 'forum', 'replies', 'replies.author'],
+        });
+    }
+    async addResponseToPost(postId, dto, user) {
+        const post = await this.postRepository.findOne({
+            where: { id: postId },
+            relations: ['replies'],
+        });
+        if (!post) {
+            throw new common_1.NotFoundException('Tópico não encontrado');
+        }
+        const resposta = this.repliesRepository.create({
+            content: dto.content,
+            post: post,
+            authorId: user.id
+        });
+        await this.repliesRepository.save(resposta);
+        return this.postRepository.findOne({
+            where: { id: postId },
+            relations: ['author', 'forum', 'replies', 'replies.author'],
+        });
+    }
 };
 exports.PostService = PostService;
 exports.PostService = PostService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(post_entity_1.Post)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(1, (0, typeorm_1.InjectRepository)(repliy_entity_1.Reply)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], PostService);
 //# sourceMappingURL=post.service.js.map
