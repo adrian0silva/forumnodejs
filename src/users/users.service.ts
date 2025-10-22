@@ -33,30 +33,31 @@ export class UsersService {
 
     const payload = {
       sub: usuarioCriado.id, // subject = sujeito
-      login: usuarioCriado.login,
+      login: usuarioCriado.username,
     };
-    const token_acesso = await this.jwtService.signAsync(
+    const access_token = await this.jwtService.signAsync(
       { ...payload, type: 'access' },
       { expiresIn: '15m' },
     );
 
-    const refreshToken = await this.jwtService.signAsync(
+    const refresh_token = await this.jwtService.signAsync(
       { ...payload, type: 'refresh' },
       { expiresIn: '1h' },
     );
-    this.redisService.set(refreshToken, usuarioCriado.id);
-
+    console.log('antes de entrar no redis')
+    this.redisService.set(refresh_token, usuarioCriado.id);
+    console.log('salvou no redis')
     return {
       user: usuarioCriado, // Retornar o usuário criado
-      token_acesso,
-      refreshToken,
+      access_token,
+      refresh_token,
     };
   }
 
   findAll() {
     return this.userRepository.find(); // Encontrar todos os usuários
   }
-  findOneById(id: number) {
+  findOneById(id: string) {
     return this.userRepository.findOne({ where: { id } }); // Encontrar um usuário pelo ID
   }
 

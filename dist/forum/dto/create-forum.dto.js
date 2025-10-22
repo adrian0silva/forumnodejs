@@ -12,9 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateForumDto = void 0;
 const openapi = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+const category_enum_1 = require("../category/category.enum");
 class CreateForumDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { title: { required: true, type: () => String }, description: { required: true, type: () => String } };
+        return { title: { required: true, type: () => String }, description: { required: true, type: () => String }, category: { required: true, enum: require("../category/category.enum").Category } };
     }
 }
 exports.CreateForumDto = CreateForumDto;
@@ -26,4 +27,8 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateForumDto.prototype, "description", void 0);
+__decorate([
+    (0, class_validator_1.IsEnum)(category_enum_1.Category),
+    __metadata("design:type", String)
+], CreateForumDto.prototype, "category", void 0);
 //# sourceMappingURL=create-forum.dto.js.map

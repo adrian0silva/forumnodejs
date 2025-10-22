@@ -8,7 +8,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const options: StrategyOptions = {
       clientID: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: 'http://localhost:4000/auth/google/redirect',
+      callbackURL: 'http://localhost:3001/auth/google/redirect',
       scope: ['email', 'profile'],
     };
     super(options);
@@ -16,7 +16,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
   async validate(
     accessToken: string,
-    refreshToken: string,
+    refresh_token: string,
     profile: any,
   ): Promise<any> {
     const { name, emails, photos } = profile;

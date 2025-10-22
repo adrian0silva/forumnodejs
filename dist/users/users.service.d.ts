@@ -11,11 +11,11 @@ export declare class UsersService {
     constructor(userRepository: Repository<User>, jwtService: JwtService, redisService: RedisService);
     create(createUserDto: CreateUserDto): Promise<{
         user: User;
-        token_acesso: string;
-        refreshToken: string;
+        access_token: string;
+        refresh_token: string;
     }>;
     findAll(): Promise<User[]>;
-    findOneById(id: number): Promise<User>;
+    findOneById(id: string): Promise<User>;
     findOne(where: any): Promise<User>;
     update(id: number, updateUserDto: UpdateUserDto): Promise<import("typeorm").UpdateResult>;
     remove(id: number): Promise<import("typeorm").DeleteResult>;

@@ -23,17 +23,31 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    login(loginDto) {
+    renovar_token(body) {
+        const { refresh_token } = body;
+        return this.authService.refresh(refresh_token);
+    }
+    async login(loginDto) {
         return this.authService.login(loginDto);
     }
     async googleAuth(req) {
     }
     async googleAuthRedirect(req, res) {
+        console.log('teste');
         const { access_token } = await this.authService.googleLogin(req);
-        res.redirect(`http://localhost:3000?token=${access_token}`);
+        res.redirect(`http://localhost:5173/auth/callback?token=${access_token}`);
     }
 };
 exports.AuthController = AuthController;
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.Post)('atualiza_token'),
+    openapi.ApiResponse({ status: 201 }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "renovar_token", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)('login'),
@@ -41,9 +55,10 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [login_dto_1.LoginDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.UseGuards)(google_auth_guard_1.GoogleAuthGuard),
     (0, common_1.Get)('google'),
     openapi.ApiResponse({ status: 200 }),
@@ -53,6 +68,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "googleAuth", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.UseGuards)(google_auth_guard_1.GoogleAuthGuard),
     (0, common_1.Get)('google/redirect'),
     openapi.ApiResponse({ status: 200 }),

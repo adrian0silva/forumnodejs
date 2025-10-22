@@ -17,6 +17,8 @@ const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("@nestjs/typeorm");
 const postgres_config_service_1 = require("./database/postgres.config.service");
 const forum_module_1 = require("./forum/forum.module");
+const thread_module_1 = require("./thread/thread.module");
+const post_module_1 = require("./post/post.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -35,7 +37,9 @@ exports.AppModule = AppModule = __decorate([
                 secret: 'secret',
                 signOptions: { expiresIn: '1h', algorithm: 'HS256' },
             }),
-            forum_module_1.ForumModule
+            forum_module_1.ForumModule,
+            thread_module_1.ThreadModule,
+            post_module_1.PostModule
         ],
         controllers: [],
         providers: [

@@ -14,14 +14,17 @@ const forum_controller_1 = require("./forum.controller");
 const forum_service_1 = require("./forum.service");
 const post_entity_1 = require("../post/entities/post.entity");
 const post_module_1 = require("../post/post.module");
+const thread_module_1 = require("../thread/thread.module");
+const thread_service_1 = require("../thread/thread.service");
+const thread_entity_1 = require("../thread/entities/thread.entity");
 let ForumModule = class ForumModule {
 };
 exports.ForumModule = ForumModule;
 exports.ForumModule = ForumModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([forum_entity_1.Forum, post_entity_1.Post]), post_module_1.PostModule],
+        imports: [typeorm_1.TypeOrmModule.forFeature([forum_entity_1.Forum, post_entity_1.Post, thread_entity_1.Thread]), post_module_1.PostModule, thread_module_1.ThreadModule],
         controllers: [forum_controller_1.ForumController],
-        providers: [forum_service_1.ForumService],
+        providers: [forum_service_1.ForumService, thread_service_1.ThreadService],
     })
 ], ForumModule);
 //# sourceMappingURL=forum.module.js.map

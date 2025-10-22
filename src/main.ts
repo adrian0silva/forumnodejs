@@ -22,12 +22,14 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   // Enable CORS
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+  });
 
   // Enable validation
   app.useGlobalPipes(new ValidationPipe());
 
   
-  await app.listen(4000);
+  await app.listen(3001);
 }
 bootstrap(); 

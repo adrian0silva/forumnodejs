@@ -45,9 +45,7 @@ let AuthGuard = class AuthGuard {
             const payload = await this.jwtService.verify(token, { algorithms: ['HS256'] });
             console.log('AuthGuard: Token válido, buscando usuário');
             const user = await this.usuarioService.findOne({
-                where: {
-                    id: payload.sub
-                }
+                id: payload.sub
             });
             if (!user) {
                 console.log('AuthGuard: Usuário não encontrado');
@@ -62,7 +60,7 @@ let AuthGuard = class AuthGuard {
             if (error.name === 'TokenExpiredError') {
                 throw new common_1.UnauthorizedException('Token expired', { cause: error });
             }
-            throw new common_1.UnauthorizedException('Invalid token', { cause: error });
+            throw new common_1.UnauthorizedException(error.message, { cause: error });
         }
     }
 };

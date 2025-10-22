@@ -20,12 +20,12 @@ const forum_service_1 = require("./forum.service");
 const create_forum_dto_1 = require("./dto/create-forum.dto");
 const update_forum_dto_1 = require("./dto/update-forum.dto");
 const public_decorator_1 = require("../auth/public.decorator");
-const post_service_1 = require("../post/post.service");
 const user_entity_1 = require("../users/entities/user.entity");
+const thread_service_1 = require("../thread/thread.service");
 let ForumController = class ForumController {
-    constructor(forumService, postService) {
+    constructor(forumService, threadService) {
         this.forumService = forumService;
-        this.postService = postService;
+        this.threadService = threadService;
     }
     create(createForumDto) {
         return this.forumService.create(createForumDto);
@@ -33,18 +33,12 @@ let ForumController = class ForumController {
     findAll() {
         return this.forumService.findAll();
     }
-    findByName(forumName) {
-        return this.forumService.findOneByTitle(forumName);
-    }
-    async findPosts(forumName) {
-        const forum = await this.forumService.findOneByTitle(forumName);
-        return this.postService.findAll({
-            where: { forumId: forum.id },
-        });
+    findByName(slugName) {
+        return this.forumService.findThreadsByForumSlug(slugName);
     }
     async createPost(forumName, body, user) {
         const forum = await this.forumService.findOneByTitle(forumName);
-        return this.postService.create({
+        return this.threadService.create({
             ...body,
             forumId: forum.id,
             authorId: user.id
@@ -76,25 +70,16 @@ __decorate([
 ], ForumController.prototype, "findAll", null);
 __decorate([
     (0, public_decorator_1.Public)(),
-    (0, common_1.Get)('/:forumName'),
+    (0, common_1.Get)('/:slugName'),
     openapi.ApiResponse({ status: 200, type: require("./entities/forum.entity").Forum }),
-    __param(0, (0, common_1.Param)('forumName')),
+    __param(0, (0, common_1.Param)('slugName')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], ForumController.prototype, "findByName", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Get)('/:forumName/posts'),
-    openapi.ApiResponse({ status: 200, type: [require("../post/entities/post.entity").Post] }),
-    __param(0, (0, common_1.Param)('forumName')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], ForumController.prototype, "findPosts", null);
-__decorate([
     (0, common_1.Post)('/:forumName/posts'),
-    openapi.ApiResponse({ status: 201, type: require("../post/entities/post.entity").Post }),
+    openapi.ApiResponse({ status: 201, type: String }),
     __param(0, (0, common_1.Param)('forumName')),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, token_payload_params_1.TokenPayloadParam)()),
@@ -122,6 +107,6 @@ __decorate([
 exports.ForumController = ForumController = __decorate([
     (0, common_1.Controller)('forums'),
     __metadata("design:paramtypes", [forum_service_1.ForumService,
-        post_service_1.PostService])
+        thread_service_1.ThreadService])
 ], ForumController);
 //# sourceMappingURL=forum.controller.js.map

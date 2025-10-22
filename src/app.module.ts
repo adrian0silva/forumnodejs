@@ -12,6 +12,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostgresConfigService } from './database/postgres.config.service';
 import { ForumModule } from './forum/forum.module';
+import { ThreadModule } from './thread/thread.module';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -32,7 +34,9 @@ import { ForumModule } from './forum/forum.module';
       secret: 'secret',
       signOptions: { expiresIn: '1h', algorithm: 'HS256'},
     }),
-    ForumModule
+    ForumModule,
+    ThreadModule,
+    PostModule
   ],
   controllers: [],
   providers: [

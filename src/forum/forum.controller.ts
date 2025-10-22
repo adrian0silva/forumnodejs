@@ -5,13 +5,13 @@ import { ForumService } from './forum.service';
 import { CreateForumDto } from './dto/create-forum.dto';
 import { UpdateForumDto } from './dto/update-forum.dto';
 import { Public } from 'src/auth/public.decorator';
-import { PostService } from 'src/post/post.service';
 import { User } from 'src/users/entities/user.entity';
+import { ThreadService } from 'src/thread/thread.service';
 
 @Controller('forums')
 export class ForumController {
   constructor(private readonly forumService: ForumService,
-    private readonly postService: PostService
+    private readonly threadService: ThreadService
   ) {}
 
   @Post()
@@ -26,26 +26,26 @@ export class ForumController {
   }
 
   @Public()
-  @Get('/:forumName')
-  findByName(@Param('forumName') forumName: string) {
-    return this.forumService.findOneByTitle(forumName);
+  @Get('/:slugName')
+  findByName(@Param('slugName') slugName: string) {
+    return this.forumService.findThreadsByForumSlug(slugName);
   }
 
-  @Public()
-  @Get('/:forumName/posts')
-  async findPosts(@Param('forumName') forumName: string) {
-    const forum = await this.forumService.findOneByTitle(forumName);
-    return this.postService.findAll({
-      where: { forumId: forum.id },
-    });
-  }
+  // @Public()
+  // @Get('/:forumName/posts')
+  // async findPosts(@Param('forumName') forumName: string) {
+  //   const forum = await this.forumService.findOneByTitle(forumName);
+  //   return this.postService.findAll({
+  //     where: { forumId: forum.id },
+  //   });
+  // }
 
   @Post('/:forumName/posts')
   async createPost(@Param('forumName') forumName: string,@Body() body: any,
   @TokenPayloadParam() user: User) {
     const forum = await this.forumService.findOneByTitle(forumName);
 
-    return this.postService.create({
+    return this.threadService.create({
       ...body,
       forumId: forum.id,
       authorId: user.id

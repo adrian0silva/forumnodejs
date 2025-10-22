@@ -17,10 +17,10 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const forum_entity_1 = require("./entities/forum.entity");
 const typeorm_2 = require("typeorm");
-const post_service_1 = require("../post/post.service");
+const thread_service_1 = require("../thread/thread.service");
 let ForumService = class ForumService {
-    constructor(postService, forumRepository) {
-        this.postService = postService;
+    constructor(threadService, forumRepository) {
+        this.threadService = threadService;
         this.forumRepository = forumRepository;
     }
     async create(createForumDto) {
@@ -33,10 +33,10 @@ let ForumService = class ForumService {
     findOneByTitle(title) {
         return this.forumRepository.findOne({ where: { title } });
     }
-    async findPosts(forumName) {
-        const forum = await this.findOneByTitle(forumName);
-        return this.postService.findAll({
-            where: { forumId: forum.id },
+    async findThreadsByForumSlug(slugName) {
+        return this.forumRepository.findOne({
+            where: { slug: slugName },
+            relations: ['threads'],
         });
     }
     update(id, updateForumDto) {
@@ -50,7 +50,7 @@ exports.ForumService = ForumService;
 exports.ForumService = ForumService = __decorate([
     (0, common_1.Injectable)(),
     __param(1, (0, typeorm_1.InjectRepository)(forum_entity_1.Forum)),
-    __metadata("design:paramtypes", [post_service_1.PostService,
+    __metadata("design:paramtypes", [thread_service_1.ThreadService,
         typeorm_2.Repository])
 ], ForumService);
 //# sourceMappingURL=forum.service.js.map

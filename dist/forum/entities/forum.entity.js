@@ -11,22 +11,39 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Forum = void 0;
 const openapi = require("@nestjs/swagger");
-const post_entity_1 = require("../../post/entities/post.entity");
 const typeorm_1 = require("typeorm");
+const category_enum_1 = require("../category/category.enum");
+const thread_entity_1 = require("../../thread/entities/thread.entity");
 let Forum = class Forum {
+    generateSlug() {
+        this.slug = this.title
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/--+/g, '-');
+    }
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => Number }, title: { required: true, type: () => String }, description: { required: true, type: () => String }, createdAt: { required: true, type: () => Date }, updatedAt: { required: true, type: () => Date }, isActive: { required: true, type: () => Boolean }, posts: { required: true, type: () => [require("../../post/entities/post.entity").Post] } };
+        return { id: { required: true, type: () => String }, category: { required: true, enum: require("../category/category.enum").Category }, title: { required: true, type: () => String }, slug: { required: true, type: () => String }, description: { required: true, type: () => String }, createdAt: { required: true, type: () => Date }, updatedAt: { required: true, type: () => Date }, isActive: { required: true, type: () => Boolean }, threads: { required: true, type: () => [require("../../thread/entities/thread.entity").Thread] } };
     }
 };
 exports.Forum = Forum;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
+    __metadata("design:type", String)
 ], Forum.prototype, "id", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'enum', enum: category_enum_1.Category, default: category_enum_1.Category.VALE_TUDO }),
+    __metadata("design:type", String)
+], Forum.prototype, "category", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', length: 255 }),
     __metadata("design:type", String)
 ], Forum.prototype, "title", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', length: 255 }),
+    __metadata("design:type", String)
+], Forum.prototype, "slug", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'text' }),
     __metadata("design:type", String)
@@ -44,9 +61,16 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Forum.prototype, "isActive", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => post_entity_1.Post, (post) => post.forum),
+    (0, typeorm_1.OneToMany)(() => thread_entity_1.Thread, thread => thread.forum),
     __metadata("design:type", Array)
-], Forum.prototype, "posts", void 0);
+], Forum.prototype, "threads", void 0);
+__decorate([
+    (0, typeorm_1.BeforeInsert)(),
+    (0, typeorm_1.BeforeUpdate)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], Forum.prototype, "generateSlug", null);
 exports.Forum = Forum = __decorate([
     (0, typeorm_1.Entity)('forums')
 ], Forum);

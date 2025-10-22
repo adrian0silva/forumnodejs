@@ -4,12 +4,12 @@ import { UpdateForumDto } from './dto/update-forum.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Forum } from './entities/forum.entity';
 import { Repository } from 'typeorm';
-import { PostService } from 'src/post/post.service';
+import { ThreadService } from 'src/thread/thread.service';
 
 @Injectable()
 export class ForumService {
   constructor(
-    private postService: PostService,
+    private threadService: ThreadService,
     @InjectRepository(Forum)
     private forumRepository: Repository<Forum>,
   ) {}
@@ -26,14 +26,21 @@ export class ForumService {
     return this.forumRepository.findOne({ where: { title } });
   }
 
-  async findPosts(forumName: string): Promise<any> {
-    const forum = await this.findOneByTitle(forumName)
-    // Assuming there's a relation to posts in the Forum entity
-    return this.postService.findAll({
-      where: { forumId: forum.id },
+  async findThreadsByForumSlug(slugName: string): Promise<Forum> {
+    return this.forumRepository.findOne({
+      where: { slug: slugName },
+      relations: ['threads'],
     });
-
   }
+
+  // async findPosts(forumName: string): Promise<any> {
+  //   const forum = await this.findOneByTitle(forumName)
+  //   // Assuming there's a relation to posts in the Forum entity
+  //   return this.postService.findAll({
+  //     where: { forumId: forum.id },
+  //   });
+
+  // }
 
   update(id: number, updateForumDto: UpdateForumDto) {
     return `This action updates a #${id} forum`;

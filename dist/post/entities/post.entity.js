@@ -11,60 +11,47 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Post = void 0;
 const openapi = require("@nestjs/swagger");
-const forum_entity_1 = require("../../forum/entities/forum.entity");
+const thread_entity_1 = require("../../thread/entities/thread.entity");
 const user_entity_1 = require("../../users/entities/user.entity");
 const typeorm_1 = require("typeorm");
-const repliy_entity_1 = require("./repliy.entity");
 let Post = class Post {
     static _OPENAPI_METADATA_FACTORY() {
-        return { id: { required: true, type: () => Number }, title: { required: true, type: () => String }, description: { required: true, type: () => String }, createdAt: { required: true, type: () => Date }, updatedAt: { required: true, type: () => Date }, isActive: { required: true, type: () => Boolean }, forum: { required: true, type: () => require("../../forum/entities/forum.entity").Forum }, forumId: { required: true, type: () => Number }, author: { required: true, type: () => require("../../users/entities/user.entity").User }, replies: { required: true, type: () => [require("./repliy.entity").Reply] }, authorId: { required: true, type: () => Number } };
+        return { id: { required: true, type: () => String }, content: { required: true, type: () => String }, thread: { required: true, type: () => require("../../thread/entities/thread.entity").Thread }, threadId: { required: true, type: () => String }, user: { required: true, type: () => require("../../users/entities/user.entity").User }, userId: { required: true, type: () => String }, createdAt: { required: true, type: () => Date }, updatedAt: { required: true, type: () => Date } };
     }
 };
 exports.Post = Post;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
+    __metadata("design:type", String)
 ], Post.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', length: 255 }),
+    (0, typeorm_1.Column)('text'),
     __metadata("design:type", String)
-], Post.prototype, "title", void 0);
+], Post.prototype, "content", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'text' }),
+    (0, typeorm_1.ManyToOne)(() => thread_entity_1.Thread, thread => thread.posts, { onDelete: 'CASCADE' }),
+    __metadata("design:type", thread_entity_1.Thread)
+], Post.prototype, "thread", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Post.prototype, "description", void 0);
+], Post.prototype, "threadId", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, user => user.posts, { onDelete: 'CASCADE' }),
+    __metadata("design:type", user_entity_1.User)
+], Post.prototype, "user", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Post.prototype, "userId", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)({ name: 'created_at' }),
     __metadata("design:type", Date)
 ], Post.prototype, "createdAt", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' }),
+    (0, typeorm_1.UpdateDateColumn)({ name: 'updated_at' }),
     __metadata("design:type", Date)
 ], Post.prototype, "updatedAt", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: 'boolean', default: true }),
-    __metadata("design:type", Boolean)
-], Post.prototype, "isActive", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => forum_entity_1.Forum, (forum) => forum.posts),
-    __metadata("design:type", forum_entity_1.Forum)
-], Post.prototype, "forum", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: 'int' }),
-    __metadata("design:type", Number)
-], Post.prototype, "forumId", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.posts),
-    __metadata("design:type", user_entity_1.User)
-], Post.prototype, "author", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => repliy_entity_1.Reply, (reply) => reply.post),
-    __metadata("design:type", Array)
-], Post.prototype, "replies", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: 'int' }),
-    __metadata("design:type", Number)
-], Post.prototype, "authorId", void 0);
 exports.Post = Post = __decorate([
     (0, typeorm_1.Entity)('posts')
 ], Post);

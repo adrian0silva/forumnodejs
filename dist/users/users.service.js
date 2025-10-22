@@ -39,15 +39,17 @@ let UsersService = class UsersService {
         });
         const payload = {
             sub: usuarioCriado.id,
-            login: usuarioCriado.login,
+            login: usuarioCriado.username,
         };
-        const token_acesso = await this.jwtService.signAsync({ ...payload, type: 'access' }, { expiresIn: '15m' });
-        const refreshToken = await this.jwtService.signAsync({ ...payload, type: 'refresh' }, { expiresIn: '1h' });
-        this.redisService.set(refreshToken, usuarioCriado.id);
+        const access_token = await this.jwtService.signAsync({ ...payload, type: 'access' }, { expiresIn: '15m' });
+        const refresh_token = await this.jwtService.signAsync({ ...payload, type: 'refresh' }, { expiresIn: '1h' });
+        console.log('antes de entrar no redis');
+        this.redisService.set(refresh_token, usuarioCriado.id);
+        console.log('salvou no redis');
         return {
             user: usuarioCriado,
-            token_acesso,
-            refreshToken,
+            access_token,
+            refresh_token,
         };
     }
     findAll() {

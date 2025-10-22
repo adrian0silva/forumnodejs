@@ -1,36 +1,40 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, Unique } from 'typeorm';
-import { Roles } from '../../auth/role/roles.enum';
-import { Post } from 'src/post/entities/post.entity';
-import { Reply } from 'src/post/entities/repliy.entity';
+import { Roles } from "src/auth/role/roles.enum";
+import { Post } from "src/post/entities/post.entity";
+import { Thread } from "src/thread/entities/thread.entity";
+import { Column, Entity, PrimaryColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
-  @Column({ unique: true })
-  login: string;
+    @Column({ type: 'text', nullable: false })
+    username: string;
 
-  @Column({ unique: true })
-  email: string;
+    @Column({ type: 'text', nullable: false, unique: true })
+    email: string;
 
-  @Column()
-  password: string;
+    @Column({ type: 'text', nullable: false })
+    password: string;
 
-  @Column({ type: 'enum', enum: Roles, default: Roles.USER })
-  role: Roles;
+    @Column({ type: 'text', nullable: true, default: null })
+    image: string | null;
 
-  @CreateDateColumn()
-  createdAt: Date;
+    @Column({ type: 'enum', enum: Roles, default: Roles.USER })
+    role: Roles;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
 
-  @OneToMany(() => Post, (post) => post.author)
-  posts: Post[];
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
 
-  @OneToMany(() => Reply, (reply) => reply.author)
-  replies: Reply[]
-//   @OneToMany(() => Post, post => post.author)
-//   posts: Post[];
+    /* === RELAÇÕES === */
+
+    @OneToMany(() => Thread, thread => thread.user)
+    threads: Thread[];
+
+    @OneToMany(() => Post, post => post.user)
+    posts: Post[];
 }

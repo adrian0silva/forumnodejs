@@ -18,12 +18,12 @@ let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrateg
         const options = {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: 'http://localhost:4000/auth/google/redirect',
+            callbackURL: 'http://localhost:3001/auth/google/redirect',
             scope: ['email', 'profile'],
         };
         super(options);
     }
-    async validate(accessToken, refreshToken, profile) {
+    async validate(accessToken, refresh_token, profile) {
         const { name, emails, photos } = profile;
         return {
             email: emails[0].value,

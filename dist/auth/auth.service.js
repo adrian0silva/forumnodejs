@@ -12,25 +12,56 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
-const bcrypt_1 = require("bcrypt");
+const bcrypt = require("bcrypt");
 const users_service_1 = require("../users/users.service");
 const roles_enum_1 = require("./role/roles.enum");
+const redis_service_1 = require("../redis/redis.service");
 let AuthService = class AuthService {
-    constructor(usuarioService, jwtService) {
+    constructor(usuarioService, jwtService, redisService) {
         this.usuarioService = usuarioService;
         this.jwtService = jwtService;
+        this.redisService = redisService;
+    }
+    async refresh(refresh_token) {
+        const storedToken = { value: '' };
+        if (!storedToken) {
+            throw new common_1.UnauthorizedException('Invalid refresh token');
+        }
+        const payload = this.jwtService.verify(refresh_token);
+        if (payload.type !== 'refresh') {
+            throw new common_1.UnauthorizedException('Invalid token type');
+        }
+        const usuario = await this.usuarioService.findOneById(payload.sub);
+        if (!usuario) {
+            throw new common_1.UnauthorizedException('Invalid refresh token');
+        }
+        const novoPayload = {
+            sub: usuario.id,
+            login: usuario.username,
+        };
+        const novoTokenAcesso = await this.jwtService.signAsync({ ...novoPayload, type: 'access' }, { expiresIn: '15m' });
+        const novo_refresh_token = await this.jwtService.signAsync({ ...novoPayload, type: 'refresh' }, { expiresIn: '1h' });
+        this.redisService.set(novo_refresh_token, usuario.id);
+        return { access_token: novoTokenAcesso, refresh_token: novo_refresh_token };
     }
     async login(loginDto) {
-        const user = await this.usuarioService.findOne({ email: loginDto.email });
+        const user = await this.usuarioService.findOne({ where: { email: loginDto.email } });
         if (!user) {
-            throw new Error('Invalid Credentials');
+            throw new common_1.BadRequestException('Invalid Credentials');
         }
-        const isPasswordValid = bcrypt_1.default.compareSync(loginDto.password, user.password);
+        const isPasswordValid = bcrypt.compareSync(loginDto.password, user.password);
         if (!isPasswordValid) {
-            throw new Error('Invalid Credentials');
+            throw new common_1.BadRequestException('Invalid Credentials');
         }
-        const token = this.jwtService.sign({ name: user.login, email: user.email, role: user.role, sub: user.id });
-        return { access_token: token };
+        const novoPayload = {
+            sub: user.id,
+            login: user.username,
+        };
+        const access_token = await this.jwtService.signAsync({ ...novoPayload, type: 'access' }, { expiresIn: '15m' });
+        const refresh_token = await this.jwtService.signAsync({ ...novoPayload, type: 'refresh' }, { expiresIn: '1h' });
+        this.redisService.set(refresh_token, user.id);
+        return { access_token,
+            refresh_token, };
     }
     async googleLogin(req) {
         if (!req.user) {
@@ -49,7 +80,7 @@ let AuthService = class AuthService {
             user = usuarioCriado.user;
         }
         const token = this.jwtService.sign({
-            name: user.login,
+            name: user.username,
             email: user.email,
             role: user.role,
             sub: user.id
@@ -60,6 +91,7 @@ let AuthService = class AuthService {
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [users_service_1.UsersService, jwt_1.JwtService])
+    __metadata("design:paramtypes", [users_service_1.UsersService, jwt_1.JwtService,
+        redis_service_1.RedisService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

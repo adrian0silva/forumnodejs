@@ -2,15 +2,15 @@ import { CreateForumDto } from './dto/create-forum.dto';
 import { UpdateForumDto } from './dto/update-forum.dto';
 import { Forum } from './entities/forum.entity';
 import { Repository } from 'typeorm';
-import { PostService } from 'src/post/post.service';
+import { ThreadService } from 'src/thread/thread.service';
 export declare class ForumService {
-    private postService;
+    private threadService;
     private forumRepository;
-    constructor(postService: PostService, forumRepository: Repository<Forum>);
+    constructor(threadService: ThreadService, forumRepository: Repository<Forum>);
     create(createForumDto: CreateForumDto): Promise<Forum>;
     findAll(): Promise<Forum[]>;
     findOneByTitle(title: string): Promise<Forum>;
-    findPosts(forumName: string): Promise<any>;
+    findThreadsByForumSlug(slugName: string): Promise<Forum>;
     update(id: number, updateForumDto: UpdateForumDto): string;
     remove(id: number): string;
 }

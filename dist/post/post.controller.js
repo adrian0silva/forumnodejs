@@ -17,57 +17,70 @@ const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const post_service_1 = require("./post.service");
 const create_post_dto_1 = require("./dto/create-post.dto");
-const public_decorator_1 = require("../auth/public.decorator");
-const create_response_dto_1 = require("./dto/create-response.dto");
-const user_entity_1 = require("../users/entities/user.entity");
-const token_payload_params_1 = require("../auth/params/token-payload.params");
+const update_post_dto_1 = require("./dto/update-post.dto");
 let PostController = class PostController {
     constructor(postService) {
         this.postService = postService;
     }
-    async create(createPostDto) {
+    create(createPostDto) {
         return this.postService.create(createPostDto);
     }
-    async findThread(id) {
-        const idCorreto = id.split('.')[1];
-        return this.postService.findOne(parseInt(idCorreto));
+    findAll() {
+        return this.postService.findAll();
     }
-    async addResponse(id, createResponseDto, user) {
-        const postId = parseInt(id.split('.')[1]);
-        return this.postService.addResponseToPost(postId, createResponseDto, user);
+    findOne(id) {
+        return this.postService.findOne(+id);
+    }
+    update(id, updatePostDto) {
+        return this.postService.update(+id, updatePostDto);
+    }
+    remove(id) {
+        return this.postService.remove(+id);
     }
 };
 exports.PostController = PostController;
 __decorate([
     (0, common_1.Post)(),
-    openapi.ApiResponse({ status: 201, type: require("./entities/post.entity").Post }),
+    openapi.ApiResponse({ status: 201, type: String }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_post_dto_1.CreatePostDto]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], PostController.prototype, "create", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
+    (0, common_1.Get)(),
+    openapi.ApiResponse({ status: 200, type: String }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], PostController.prototype, "findAll", null);
+__decorate([
     (0, common_1.Get)(':id'),
-    openapi.ApiResponse({ status: 200, type: require("./entities/post.entity").Post }),
+    openapi.ApiResponse({ status: 200, type: String }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], PostController.prototype, "findThread", null);
+    __metadata("design:returntype", void 0)
+], PostController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Post)(':id/new-response'),
-    openapi.ApiResponse({ status: 201, type: require("./entities/post.entity").Post }),
+    (0, common_1.Patch)(':id'),
+    openapi.ApiResponse({ status: 200, type: String }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
-    __param(2, (0, token_payload_params_1.TokenPayloadParam)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, create_response_dto_1.CreateResponseDto,
-        user_entity_1.User]),
-    __metadata("design:returntype", Promise)
-], PostController.prototype, "addResponse", null);
+    __metadata("design:paramtypes", [String, update_post_dto_1.UpdatePostDto]),
+    __metadata("design:returntype", void 0)
+], PostController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    openapi.ApiResponse({ status: 200, type: String }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], PostController.prototype, "remove", null);
 exports.PostController = PostController = __decorate([
-    (0, common_1.Controller)('threads'),
+    (0, common_1.Controller)('post'),
     __metadata("design:paramtypes", [post_service_1.PostService])
 ], PostController);
 //# sourceMappingURL=post.controller.js.map

@@ -1,4 +1,5 @@
-import { IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
+import { Category } from '../category/category.enum';
 
 export class CreateForumDto {
   @IsString()
@@ -6,4 +7,7 @@ export class CreateForumDto {
 
   @IsString()
   description: string;
+
+  @IsEnum(Category)
+  category: Category;
 }

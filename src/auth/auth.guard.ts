@@ -54,9 +54,7 @@ export class AuthGuard implements CanActivate {
       console.log('AuthGuard: Token válido, buscando usuário');
       
       const user = await this.usuarioService.findOne({
-        where: {
           id: payload.sub
-        }
       });
       
       if(!user) {
@@ -72,7 +70,7 @@ export class AuthGuard implements CanActivate {
       if( error.name === 'TokenExpiredError') {
         throw new UnauthorizedException('Token expired', {cause: error});
       }
-      throw new UnauthorizedException('Invalid token', {cause: error});
+      throw new UnauthorizedException(error.message, {cause: error});
     }
   }
 }

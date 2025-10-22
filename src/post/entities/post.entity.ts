@@ -1,42 +1,30 @@
-import { Forum } from "src/forum/entities/forum.entity";
-import { User } from "src/users/entities/user.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Reply } from "./repliy.entity";
+import { Thread } from 'src/thread/entities/thread.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('posts')
 export class Post {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @PrimaryGeneratedColumn()
-  id: number;
+  @Column('text')
+  content: string;
 
-    @Column({ type: 'varchar', length: 255 })
-  title: string;
+  @ManyToOne(() => Thread, thread => thread.posts, { onDelete: 'CASCADE' })
+  thread: Thread;
 
-    @Column({ type: 'text' })
-    description: string;
+  @Column()
+  threadId: string;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date;
+  @ManyToOne(() => User, user => user.posts, { onDelete: 'CASCADE' })
+  user: User;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-    updatedAt: Date;
-    
-    @Column({ type: 'boolean', default: true })
-    isActive: boolean;
+  @Column()
+  userId: string;
 
-    @ManyToOne(() => Forum, (forum) => forum.posts)
-    forum: Forum;
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 
-    @Column({ type: 'int' })
-    forumId: number;
-
-    @ManyToOne(() => User, (user) => user.posts)
-    author: User;
-
-    @OneToMany(() => Reply, (reply) => reply.post)
-    replies: Reply[];
-
-    @Column({ type: 'int' })
-    authorId: number;
-
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 }

@@ -1,12 +1,12 @@
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { Post as PostEntity } from './entities/post.entity';
-import { CreateResponseDto } from './dto/create-response.dto';
-import { User } from 'src/users/entities/user.entity';
+import { UpdatePostDto } from './dto/update-post.dto';
 export declare class PostController {
     private readonly postService;
     constructor(postService: PostService);
-    create(createPostDto: CreatePostDto): Promise<PostEntity>;
-    findThread(id: string): Promise<PostEntity>;
-    addResponse(id: string, createResponseDto: CreateResponseDto, user: User): Promise<PostEntity>;
+    create(createPostDto: CreatePostDto): string;
+    findAll(): string;
+    findOne(id: string): string;
+    update(id: string, updatePostDto: UpdatePostDto): string;
+    remove(id: string): string;
 }
