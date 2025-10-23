@@ -20,7 +20,6 @@ import { PostModule } from './post/post.module';
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       useClass: PostgresConfigService,
-      inject: [PostgresConfigService]
     }),
     //ForumModule,
     // AuthModule,
