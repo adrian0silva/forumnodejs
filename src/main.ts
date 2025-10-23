@@ -7,8 +7,13 @@ let app: any;
 
 async function bootstrap() {
   if (!app) {
-    app = await NestFactory.create(AppModule);
+    console.log('DB_HOST env:', process.env.DB_HOST);
+    console.log('DATABASE_URL host:', process.env.DATABASE_URL);
 
+    app = await NestFactory.create(AppModule);
+    console.log('DB_HOST env:', process.env.DB_HOST);
+    console.log('DATABASE_URL host:', process.env.DATABASE_URL);
+    
     // Configuração do Swagger
     const config = new DocumentBuilder()
       .setTitle('Fórum Vale Tudo API')
