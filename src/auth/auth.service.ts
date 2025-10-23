@@ -95,7 +95,7 @@ export class AuthService {
         if (!user) {
             const usuarioCriado = await this.usuarioService.create({
                 email: req.user.email,
-                login: `${req.user.firstName} ${req.user.lastName}`,
+                username: `${req.user.firstName} ${req.user.lastName}`,
                 password: '', // Usuários do Google não têm senha
                 role: Roles.USER, // Role padrão para usuários do Google
             });
